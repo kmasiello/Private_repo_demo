@@ -1,0 +1,14 @@
+name: gh_private_repo2
+title: GH_private_repo
+username: katie.masiello
+account: katie.masiello
+server: colorado.rstudio.com
+hostUrl: https://colorado.rstudio.com/rsc/__api__
+appId: 13807
+bundleId: 65898
+url: https://colorado.rstudio.com/rsc/content/dd0fe012-c014-4238-920c-33852fde2603/
+when: 1668706643.9612
+lastSyncTime: 1668706643.96121
+asMultiple: FALSE
+asStatic: TRUE
+ignoredFiles: _extensions

@@ -1,0 +1,13 @@
+name: publishing_from_private_git_repos
+title: publishing from private git repos
+username: katie
+account: katie
+server: colorado.rstudio.com
+hostUrl: https://colorado.rstudio.com/rsc/__api__
+appId: 9946
+bundleId: 48806
+url: https://colorado.rstudio.com/rsc/content/e14d87a0-c125-4bea-bbb0-4671f452039a/
+when: 1633354432.3587
+lastSyncTime: 1633354432.35871
+asMultiple: FALSE
+asStatic: TRUE

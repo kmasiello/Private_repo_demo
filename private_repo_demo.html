@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Git-backed publishing from a private repo</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Katie Masiello and Mitch Tanney" />
+    <script src="private_repo_demo_files/header-attrs/header-attrs.js"></script>
+    <link href="private_repo_demo_files/remark-css/default.css" rel="stylesheet" />
+    <link href="private_repo_demo_files/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="private_repo_demo_files/custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Git-backed publishing from a private repo
+]
+.author[
+### Katie Masiello and Mitch Tanney
+]
+.institute[
+### 2021-10-06
+]
+.date[
+### .smaller[.orange[for internal education but <u>does not</u> contain sensitive information]]
+]
+
+---
+
+
+
+
+class: center, middle
+## Q: Can I use git-backed publishing if my repo is private?
+## A: Yes, just use a service account. Reference this section of the Admin Guide: .smaller[https://docs.rstudio.com/connect/admin/content-management/git-backed/#private-repos]
+### *subtext: this is an exercise left to the reader*
+---
+class: center, inverse, middle
+# Here's what it looks like using GitHub&lt;sup&gt;1&lt;/sup&gt;
+.footnote[
+[1] This may look different for GitLab, Azure DevOps, or other git hosts
+]
+---
+## 1.\ Create a service account on your git host  
+Meet "rstudio-colorado-demo-only" 👋 &lt;br&gt;
+&lt;center&gt;&lt;img src="private_repo_demo_files/service-account.png" height = 350px&gt;&lt;/center&gt;
+
+An admin or someone responsible should own the service account because they will need to accept share requests coming from private repos (this happens in step 5)
+---
+## 2.\ Create a GitHub PAT (Personal Access Token) for this service account 
+Scope the permissions to allow it to see repos  
+---
+## 3.\ Update the Connect `.gcfg` file to provide the credentials for the service account  
+Example:  
+
+```
+[GitCredential "GitHub"]
+Host = "github.com"
+Username = "my_username"
+Password = my-encrypted-password
+Protocol = "https"
+```
+
+The password is the PAT.
+---
+## 4.\ Invite the service account to be a collaborator on your private repo (read access minimum)
+&lt;center&gt;&lt;img src="private_repo_demo_files/add-service-account.png" height = 400px&gt;&lt;/center&gt;
+&lt;br&gt;
+---
+## 5.\ Service account owner has to accept invitation! <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#900C3F;overflow:visible;position:relative;"><path d="M352 0C369.7 0 384 14.33 384 32C384 49.67 369.7 64 352 64V74.98C352 117.4 335.1 158.1 305.1 188.1L237.3 256L305.1 323.9C335.1 353.9 352 394.6 352 437V448C369.7 448 384 462.3 384 480C384 497.7 369.7 512 352 512H32C14.33 512 0 497.7 0 480C0 462.3 14.33 448 32 448V437C32 394.6 48.86 353.9 78.86 323.9L146.7 256L78.86 188.1C48.86 158.1 32 117.4 32 74.98V64C14.33 64 0 49.67 0 32C0 14.33 14.33 0 32 0H352zM111.1 128H272C282.4 112.4 288 93.98 288 74.98V64H96V74.98C96 93.98 101.6 112.4 111.1 128zM111.1 384H272C268.5 378.7 264.5 373.7 259.9 369.1L192 301.3L124.1 369.1C119.5 373.7 115.5 378.7 111.1 384V384z"/></svg>  
+&lt;center&gt;&lt;img src="https://media.giphy.com/media/BTSXfb3oxC0g0/giphy.gif"&gt;&lt;/center&gt;  
+
+If the admin has not accepted the share request, import from git won't be able to find the repo. This could be different for other git hosts (GitLab, Azure DevOps, etc.), but GitHub users can't automatically accept collaboration request
+---
+## 6.\ Select git-backed publishing from RStudio Connect  
+.smaller[Note that once a service account is defined in the `.gcfg` file, this will be the account used to access all content. See highlighted text:
+&lt;center&gt;&lt;img src="private_repo_demo_files/git-backed-publish-window.png" height = 400px&gt;&lt;/center&gt; ] 
+---
+
+## Additional Points
+* If you had multiple git hosts, you would enter them sequentially:
+.smaller[
+  ```{}
+  [GitCredential "GitHub"]
+  Host = "github.com"
+  Username = "my_username"
+  Password = my-encrypted-password
+  Protocol = "https"
+  
+  [GitCredential "BitBucket"]
+  Host = "bitbucket.org"
+  Username = "my_bitbucket_username"
+  Password = my-encrypted-password
+  Protocol = "https"
+  ```
+  ]
+* The name after `GitCredential` is just a user-defined shortname.
+
+* You can only have .orange[**_one service account for each host_**.]
+---
+## Considerations on One Service Account per Host
+
+* There's a trade off in considering one service account defined at the product configuration level versus having user-level service accounts  
+
+* .orange[**Customer feedback around this is very valuable**] 
+
+* Considerations around user-level service accounts include concern over losing access to content if a user leaves the company
+
+* A workable remedy for teams with existing organizational delineation is to set up multiple Connect servers, each with different service accounts configured in their respective `.gcfg` file (e.g., HR has their server and their service account; Finance has their server with their own service account) 
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

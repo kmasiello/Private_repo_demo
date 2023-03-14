@@ -1,0 +1,11 @@
+name: deploy-private-repo
+title: Publish from a private git repo
+username: katie
+account: katie
+server: colorado.rstudio.com
+hostUrl: https://colorado.rstudio.com/rsc/__api__
+appId: 9958
+bundleId: 48838
+url: https://colorado.rstudio.com/rsc/content/4660bcf9-9bd0-46f6-b6ca-07ca77a7a625/
+when: 1633383439.81702
+lastSyncTime: 1633383439.81704

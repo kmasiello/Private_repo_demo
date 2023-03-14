@@ -1,0 +1,15 @@
+name: gh_private_repo
+title: GH_private_repo
+username: katie.masiello
+account: katie.masiello
+server: colorado.rstudio.com
+hostUrl: https://colorado.rstudio.com/rsc/__api__
+appId: 13806
+bundleId: 65897
+url: https://colorado.rstudio.com/rsc/content/9a44766e-7ee2-4ce3-8cee-37ce43fac051/
+when: 1668706521.74925
+lastSyncTime: 1668706521.74926
+quarto_version: 1.2.269
+quarto_engines: markdown
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,85 @@
+---
+title: "Git-backed publishing from a private repo"
+author: "Katie Masiello"
+date: "2021-10-06"
+format: 
+  # pdf:
+  #   toc: true
+  html:
+    toc: true
+    theme: cosmo
+---
+
+
+# Q: Can I use git-backed publishing if my repo is private?
+### A: Yes, just use a service account. Reference this section of the Admin Guide:
+https://docs.rstudio.com/connect/admin/content-management/git-backed/#private-repos
+
+
+
+# Here's what it looks like using GitHub^[This may look different for GitLab, Azure DevOps, or other git hosts]
+
+
+## 1. Create a service account on your git host  
+Example: the "rstudio-colorado-demo-only" service account <br>
+<img src="private_repo_demo_files/service-account.png" height = 350px>
+
+An admin or someone responsible should own the service account because they will need to accept share requests coming from private repos (this happens in step 5)
+
+
+## 2. Create a GitHub PAT (Personal Access Token) for this service account 
+Scope the permissions to allow it to see repos  
+
+
+## 3. Update the Connect `.gcfg` file to provide the credentials for the service account  
+Example:  
+
+```
+[GitCredential "GitHub"]
+Host = "github.com"
+Username = "my_username"
+Password = my-encrypted-password
+Protocol = "https"
+```
+
+The password is the PAT.
+
+
+## 4. Invite the service account to be a collaborator on your private repo (read access minimum)
+<img src="private_repo_demo_files/add-service-account.png" height = 400px>
+<br>
+
+
+## 5. Service account owner has to accept invitation! {{< fa hourglass fill="#900C3F">}}
+
+<img src="https://media.giphy.com/media/BTSXfb3oxC0g0/giphy.gif"> 
+
+If the admin has not accepted the share request, import from git won't be able to find the repo. This could be different for other git hosts (GitLab, Azure DevOps, etc.), but GitHub users can't automatically accept collaboration request
+
+
+## 6. Select git-backed publishing from RStudio Connect  
+Note that once a service account is defined in the `.gcfg` file, this will be the account used to access all content. See highlighted text:
+<img src="private_repo_demo_files/git-backed-publish-window.png" height = 400px>
+
+
+
+## Additional Points
+* If you had multiple git hosts, you would enter them sequentially:
+
+  ```{}
+  [GitCredential "GitHub"]
+  Host = "github.com"
+  Username = "my_username"
+  Password = my-encrypted-password
+  Protocol = "https"
+  
+  [GitCredential "BitBucket"]
+  Host = "bitbucket.org"
+  Username = "my_bitbucket_username"
+  Password = my-encrypted-password
+  Protocol = "https"
+  ```
+  
+* The name after `GitCredential` is just a user-defined shortname.
+
+* You can only have **_one service account for each host_**.
